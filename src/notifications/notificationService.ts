@@ -1,19 +1,31 @@
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+import { Platform, Alert } from 'react-native';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { TaskItem } from '../database/db';
 
-// Configure notification behavior for foreground
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+// Check if running inside Expo Go (where native push/local notifications throw in SDK 53+)
+const isExpoGo =
+  Constants?.appOwnership === 'expo' ||
+  Constants?.executionEnvironment === ExecutionEnvironment.StoreClient;
 
-// Map of task ID to Expo notification identifier
+// Configure notification behavior for foreground when supported
+try {
+  if (!isExpoGo && Platform.OS !== 'web') {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      }),
+    });
+  }
+} catch (err) {
+  console.warn('[NotificationService] Failed to set notification handler:', err);
+}
+
+// Map of task ID to notification identifier
 const scheduledNotificationIds: { [taskId: string]: string } = {};
 
 export async function requestNotificationPermissions(): Promise<boolean> {
@@ -23,6 +35,11 @@ export async function requestNotificationPermissions(): Promise<boolean> {
         const permission = await window.Notification.requestPermission();
         return permission === 'granted';
       }
+      return false;
+    }
+
+    if (isExpoGo) {
+      // In Expo Go SDK 53+, remote/native push notifications are disabled
       return false;
     }
 
@@ -47,7 +64,7 @@ export async function requestNotificationPermissions(): Promise<boolean> {
 
     return finalStatus === 'granted';
   } catch (err) {
-    console.warn('Error requesting notification permission:', err);
+    console.warn('[NotificationService] Error requesting notification permission:', err);
     return false;
   }
 }
@@ -57,8 +74,6 @@ export async function scheduleTaskReminder(task: TaskItem): Promise<string | nul
     if (task.reminder_minutes === undefined || task.reminder_minutes === null) {
       return null;
     }
-
-    await requestNotificationPermissions();
 
     const [year, month, day] = (task.date || '').split('-').map(Number);
     const [hours, minutes] = (task.start_time || '09:00').split(':').map(Number);
@@ -72,34 +87,19 @@ export async function scheduleTaskReminder(task: TaskItem): Promise<string | nul
     const now = new Date();
 
     const reminderTitle = `🔐 CyberSec Reminder: ${task.title}`;
-    const reminderBody = task.reminder_minutes === 0
-      ? `Task "${task.title}" is starting now! [${task.category}]`
-      : `Upcoming Task: "${task.title}" starts in ${task.reminder_minutes} minutes! [${task.category}]`;
+    const reminderBody =
+      task.reminder_minutes === 0
+        ? `Task "${task.title}" is starting now! [${task.category}]`
+        : `Upcoming Task: "${task.title}" starts in ${task.reminder_minutes} minutes! [${task.category}]`;
 
-    // If scheduled time is in the future
-    if (reminderDate > now) {
-      if (Platform.OS !== 'web') {
-        const identifier = await Notifications.scheduleNotificationAsync({
-          content: {
-            title: reminderTitle,
-            body: reminderBody,
-            sound: 'default',
-            data: { taskId: task.id, category: task.category },
-          },
-          trigger: {
-            type: Notifications.SchedulableTriggerInputTypes.DATE,
-            date: reminderDate,
-          },
-        });
-
-        scheduledNotificationIds[task.id] = identifier;
-        return identifier;
-      } else {
-        // Web timeout
+    // Web fallback
+    if (Platform.OS === 'web') {
+      await requestNotificationPermissions();
+      if (reminderDate > now) {
         const delayMs = reminderDate.getTime() - now.getTime();
         if (delayMs > 0 && delayMs < 2147483647) {
           const timeoutId = setTimeout(() => {
-            if (window.Notification && window.Notification.permission === 'granted') {
+            if (typeof window !== 'undefined' && window.Notification && window.Notification.permission === 'granted') {
               new window.Notification(reminderTitle, {
                 body: reminderBody,
                 icon: '/favicon.png',
@@ -109,26 +109,56 @@ export async function scheduleTaskReminder(task: TaskItem): Promise<string | nul
           scheduledNotificationIds[task.id] = String(timeoutId);
         }
         return `web-reminder-${task.id}`;
-      }
-    } else {
-      // If task is scheduled for today or imminent, trigger instant confirmation notification
-      if (Platform.OS !== 'web') {
-        const identifier = await Notifications.scheduleNotificationAsync({
-          content: {
-            title: `🔔 Task Saved: ${task.title}`,
+      } else {
+        if (typeof window !== 'undefined' && window.Notification && window.Notification.permission === 'granted') {
+          new window.Notification(`🔔 Task Saved: ${task.title}`, {
             body: `Reminder active for ${task.date} at ${task.start_time}`,
-            sound: 'default',
-          },
-          trigger: null, // Send immediately
-        });
-        scheduledNotificationIds[task.id] = identifier;
-        return identifier;
+            icon: '/favicon.png',
+          });
+        }
+        return `web-reminder-now-${task.id}`;
       }
     }
 
-    return null;
+    // Expo Go fallback
+    if (isExpoGo) {
+      // In Expo Go, native notifications cannot be scheduled via expo-notifications
+      return `expogo-mock-${task.id}`;
+    }
+
+    // Native Standalone / Development Build
+    await requestNotificationPermissions();
+
+    if (reminderDate > now) {
+      const identifier = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: reminderTitle,
+          body: reminderBody,
+          sound: 'default',
+          data: { taskId: task.id, category: task.category },
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DATE,
+          date: reminderDate,
+        },
+      });
+
+      scheduledNotificationIds[task.id] = identifier;
+      return identifier;
+    } else {
+      const identifier = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `🔔 Task Saved: ${task.title}`,
+          body: `Reminder active for ${task.date} at ${task.start_time}`,
+          sound: 'default',
+        },
+        trigger: null,
+      });
+      scheduledNotificationIds[task.id] = identifier;
+      return identifier;
+    }
   } catch (err) {
-    console.warn('Could not schedule notification:', err);
+    console.warn('[NotificationService] Could not schedule notification:', err);
     return null;
   }
 }
@@ -137,41 +167,51 @@ export async function cancelTaskReminder(taskId: string): Promise<void> {
   try {
     const notifId = scheduledNotificationIds[taskId];
     if (notifId) {
-      if (Platform.OS !== 'web') {
+      if (Platform.OS !== 'web' && !isExpoGo) {
         await Notifications.cancelScheduledNotificationAsync(notifId);
-      } else {
+      } else if (Platform.OS === 'web') {
         clearTimeout(Number(notifId));
       }
       delete scheduledNotificationIds[taskId];
     }
   } catch (err) {
-    console.warn('Could not cancel notification:', err);
+    console.warn('[NotificationService] Could not cancel notification:', err);
   }
 }
 
 export async function sendInstantTestNotification(): Promise<void> {
   try {
-    const granted = await requestNotificationPermissions();
-    if (!granted) return;
-
-    if (Platform.OS !== 'web') {
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: '🔐 CyberSec Planner Alert',
-          body: 'Local notification test successful! Your cyber study reminders are working perfectly.',
-          sound: 'default',
-        },
-        trigger: null,
-      });
-    } else if (typeof window !== 'undefined' && 'Notification' in window) {
-      if (window.Notification.permission === 'granted') {
+    if (Platform.OS === 'web') {
+      const granted = await requestNotificationPermissions();
+      if (granted && typeof window !== 'undefined' && window.Notification) {
         new window.Notification('🔐 CyberSec Planner Alert', {
           body: 'Local notification test successful! Your cyber study reminders are working perfectly.',
           icon: '/favicon.png',
         });
       }
+      return;
     }
+
+    if (isExpoGo) {
+      Alert.alert(
+        '🔐 Notification Engine Notice',
+        'Push & background notification modules require a Standalone or Development Build on Android (SDK 53+). When installed via APK/EAS, notifications will fire natively.'
+      );
+      return;
+    }
+
+    const granted = await requestNotificationPermissions();
+    if (!granted) return;
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '🔐 CyberSec Planner Alert',
+        body: 'Local notification test successful! Your cyber study reminders are working perfectly.',
+        sound: 'default',
+      },
+      trigger: null,
+    });
   } catch (err) {
-    console.warn('Could not send test notification:', err);
+    console.warn('[NotificationService] Could not send test notification:', err);
   }
 }
