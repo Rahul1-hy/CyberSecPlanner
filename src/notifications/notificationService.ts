@@ -1,4 +1,3 @@
-import * as Notifications from 'expo-notifications';
 import { Platform, Alert } from 'react-native';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { TaskItem } from '../database/db';
@@ -8,21 +7,36 @@ const isExpoGo =
   Constants?.appOwnership === 'expo' ||
   Constants?.executionEnvironment === ExecutionEnvironment.StoreClient;
 
-// Configure notification behavior for foreground when supported
-try {
-  if (!isExpoGo && Platform.OS !== 'web') {
-    Notifications.setNotificationHandler({
-      handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: true,
-        shouldShowBanner: true,
-        shouldShowList: true,
-      }),
-    });
+let cachedNotificationsModule: typeof import('expo-notifications') | null = null;
+let handlerInitialized = false;
+
+function getNotifications(): typeof import('expo-notifications') | null {
+  if (isExpoGo || Platform.OS === 'web') {
+    return null;
   }
-} catch (err) {
-  console.warn('[NotificationService] Failed to set notification handler:', err);
+  if (cachedNotificationsModule) {
+    return cachedNotificationsModule;
+  }
+  try {
+    // Dynamically require so Expo Go does not throw at module import time
+    cachedNotificationsModule = require('expo-notifications');
+    if (cachedNotificationsModule && !handlerInitialized) {
+      cachedNotificationsModule.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: true,
+          shouldPlaySound: true,
+          shouldSetBadge: true,
+          shouldShowBanner: true,
+          shouldShowList: true,
+        }),
+      });
+      handlerInitialized = true;
+    }
+    return cachedNotificationsModule;
+  } catch (err) {
+    console.warn('[NotificationService] Native notifications not available in current environment:', err);
+    return null;
+  }
 }
 
 // Map of task ID to notification identifier
@@ -42,6 +56,9 @@ export async function requestNotificationPermissions(): Promise<boolean> {
       // In Expo Go SDK 53+, remote/native push notifications are disabled
       return false;
     }
+
+    const Notifications = getNotifications();
+    if (!Notifications) return false;
 
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
@@ -122,9 +139,12 @@ export async function scheduleTaskReminder(task: TaskItem): Promise<string | nul
 
     // Expo Go fallback
     if (isExpoGo) {
-      // In Expo Go, native notifications cannot be scheduled via expo-notifications
+      // In Expo Go, native notifications cannot be scheduled
       return `expogo-mock-${task.id}`;
     }
+
+    const Notifications = getNotifications();
+    if (!Notifications) return null;
 
     // Native Standalone / Development Build
     await requestNotificationPermissions();
@@ -168,7 +188,10 @@ export async function cancelTaskReminder(taskId: string): Promise<void> {
     const notifId = scheduledNotificationIds[taskId];
     if (notifId) {
       if (Platform.OS !== 'web' && !isExpoGo) {
-        await Notifications.cancelScheduledNotificationAsync(notifId);
+        const Notifications = getNotifications();
+        if (Notifications) {
+          await Notifications.cancelScheduledNotificationAsync(notifId);
+        }
       } else if (Platform.OS === 'web') {
         clearTimeout(Number(notifId));
       }
@@ -199,6 +222,9 @@ export async function sendInstantTestNotification(): Promise<void> {
       );
       return;
     }
+
+    const Notifications = getNotifications();
+    if (!Notifications) return;
 
     const granted = await requestNotificationPermissions();
     if (!granted) return;
