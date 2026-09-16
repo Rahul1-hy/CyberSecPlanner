@@ -1,0 +1,36 @@
+# Git
+.git
+.gitignore
+
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Expo & Build Artifacts
+.expo
+dist
+web-build
+coverage
+
+# Mobile native directories
+android
+ios
+
+# Environment & Local Secrets
+.env
+.env.local
+.env.*.local
+
+# IDE & Editor Settings
+.vscode
+.idea
+.gemini
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Documentation / Scratch Artifacts
+*.md
+!README.md
