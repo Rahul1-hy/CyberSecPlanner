@@ -41,20 +41,8 @@ RUN rm -rf ./*
 # Copy exported web bundle from builder
 COPY --from=builder /app/dist .
 
-# Create lightweight SPA nginx configuration
-RUN echo 'server {' \
-    '    listen 80;' \
-    '    server_name localhost;' \
-    '    root /usr/share/nginx/html;' \
-    '    index index.html;' \
-    '    location / {' \
-    '        try_files $uri $uri/ /index.html;' \
-    '    }' \
-    '    location ~* \.(?:ico|css|js|gif|jpe?g|png|woff2?|eot|ttf|svg)$ {' \
-    '        expires 30d;' \
-    '        add_header Cache-Control "public, max-age=2592000, immutable";' \
-    '    }' \
-    '}' > /etc/nginx/conf.d/default.conf
+# Copy custom Nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose HTTP port
 EXPOSE 80
