@@ -29,6 +29,10 @@
         "RECEIVE_BOOT_COMPLETED",
         "SCHEDULE_EXACT_ALARM",
         "VIBRATE",
+        "POST_NOTIFICATIONS",
+        "RECEIVE_BOOT_COMPLETED",
+        "SCHEDULE_EXACT_ALARM",
+        "VIBRATE",
         "POST_NOTIFICATIONS"
       ]
     },
@@ -55,6 +59,12 @@
       "eas": {
         "projectId": "bdb0d957-bf58-4a68-aeb5-02af208ba927"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/bdb0d957-bf58-4a68-aeb5-02af208ba927"
     }
   }
 }
