@@ -32,14 +32,15 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="light" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: COLORS.background },
-          animation: 'slide_from_right',
-        }}
-      >
+      <StatusBar hidden={true} />
+      <View style={styles.rootContainer}>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: COLORS.background },
+            animation: 'slide_from_right',
+          }}
+        >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="tasks/add"
@@ -91,11 +92,17 @@ export default function RootLayout() {
           }}
         />
       </Stack>
+      </View>
     </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
+  rootContainer: {
+    flex: 1,
+    paddingTop: 22,
+    backgroundColor: COLORS.background,
+  },
   loadingContainer: {
     flex: 1,
     backgroundColor: COLORS.background,

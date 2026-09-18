@@ -110,13 +110,13 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <Header subtitle={formatFullDate()} />
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
         contentContainerStyle={styles.scrollContent}
       >
-        <Header subtitle={formatFullDate()} />
-
         {/* Master Job Readiness Gauge Card */}
         <View style={styles.readinessCard}>
           <View style={styles.readinessHeader}>
@@ -282,16 +282,17 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingTop: 6,
+    paddingBottom: 24,
   },
   readinessCard: {
     marginHorizontal: 20,
-    marginTop: 8,
+    marginTop: 4,
     marginBottom: 16,
     backgroundColor: COLORS.surface,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: 'rgba(0, 255, 157, 0.3)',
+    borderColor: 'rgba(45, 212, 191, 0.25)',
     padding: 16,
   },
   readinessHeader: {
@@ -316,7 +317,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(0, 255, 157, 0.15)',
+    backgroundColor: 'rgba(45, 212, 191, 0.15)',
     borderWidth: 1.5,
     borderColor: COLORS.primary,
     justifyContent: 'center',

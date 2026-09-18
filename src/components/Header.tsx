@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../constants/theme';
 import { getGreeting, getDaysUntilTarget } from '../utils/dateUtils';
+import { getAppSettings } from '../database/settingsQueries';
 
 interface HeaderProps {
   title?: string;
@@ -13,7 +14,25 @@ interface HeaderProps {
 
 export function Header({ title, subtitle, showGoalBadge = true }: HeaderProps) {
   const router = useRouter();
-  const daysLeft = getDaysUntilTarget('2026-12-31');
+  const [goalTitle, setGoalTitle] = useState('DECEMBER 2026 GOAL');
+  const [targetRole, setTargetRole] = useState('Cyber Security Analyst / SOC');
+  const [targetDate, setTargetDate] = useState('2026-12-31');
+
+  useEffect(() => {
+    let isMounted = true;
+    getAppSettings().then((s) => {
+      if (isMounted && s) {
+        if (s.goal_title) setGoalTitle(s.goal_title);
+        if (s.target_role) setTargetRole(s.target_role);
+        if (s.target_date) setTargetDate(s.target_date);
+      }
+    }).catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const daysLeft = getDaysUntilTarget(targetDate);
 
   return (
     <View style={styles.container}>
@@ -54,9 +73,13 @@ export function Header({ title, subtitle, showGoalBadge = true }: HeaderProps) {
         >
           <View style={styles.goalLeft}>
             <Text style={styles.goalTargetIcon}>🎯</Text>
-            <View>
-              <Text style={styles.goalTitle}>DECEMBER 2026 GOAL</Text>
-              <Text style={styles.goalSub}>Cyber Security Analyst / SOC</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.goalTitle} numberOfLines={1}>
+                {goalTitle}
+              </Text>
+              <Text style={styles.goalSub} numberOfLines={1}>
+                {targetRole}
+              </Text>
             </View>
           </View>
           <View style={styles.countdownBadge}>
@@ -96,9 +119,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     marginRight: 6,
     shadowColor: COLORS.primary,
-    shadowOpacity: 0.8,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 2,
   },
   brandText: {
     color: COLORS.primary,
@@ -138,12 +161,15 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1,
     borderColor: COLORS.surfaceBorder,
-    padding: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 10,
   },
   goalLeft: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
@@ -163,22 +189,24 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   countdownBadge: {
-    backgroundColor: 'rgba(0, 255, 157, 0.1)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(45, 212, 191, 0.12)',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: 'rgba(0, 255, 157, 0.3)',
+    borderColor: 'rgba(45, 212, 191, 0.25)',
     paddingHorizontal: 10,
-    paddingVertical: 4,
-    alignItems: 'center',
+    paddingVertical: 6,
   },
   countdownNumber: {
     color: COLORS.primary,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '800',
   },
   countdownLabel: {
     color: COLORS.primary,
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: '700',
     letterSpacing: 0.5,
   },

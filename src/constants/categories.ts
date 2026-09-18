@@ -101,20 +101,20 @@ export const CATEGORIES: CategoryItem[] = [
 export const PRIORITY_CONFIG = {
   high: {
     label: 'High Priority',
-    color: '#ff3b5c',
-    bg: 'rgba(255, 59, 92, 0.15)',
+    color: '#fb7185',
+    bg: 'rgba(251, 113, 133, 0.15)',
     icon: 'alert-circle',
   },
   medium: {
     label: 'Medium Priority',
-    color: '#ffb800',
-    bg: 'rgba(255, 184, 0, 0.15)',
+    color: '#fbbf24',
+    bg: 'rgba(251, 191, 36, 0.15)',
     icon: 'clock',
   },
   low: {
     label: 'Low Priority',
-    color: '#00ff9d',
-    bg: 'rgba(0, 255, 157, 0.15)',
+    color: '#34d399',
+    bg: 'rgba(52, 211, 153, 0.15)',
     icon: 'check-circle',
   },
 };

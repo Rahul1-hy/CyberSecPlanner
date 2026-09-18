@@ -212,8 +212,10 @@ export const INITIAL_STUDY_SESSIONS: StudySessionItem[] = [
 
 export const INITIAL_SETTINGS: SettingsItem = {
   id: 'global-settings',
+  goal_title: 'DECEMBER 2026 GOAL',
   target_role: 'Cyber Security Analyst / SOC Analyst',
   target_date: '2026-12-31',
+  target_package: '12 - 18 LPA',
   daily_study_target_hours: 6,
   default_reminder_minutes: 30,
   notifications_enabled: 1,

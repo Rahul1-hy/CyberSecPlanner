@@ -1,84 +1,84 @@
-// CyberSec Planner — Cyberpunk & Cyber Security Design System
+// CyberSec Planner — Eye-Friendly Cyber Security Modern Design System
 
 export const COLORS = {
-  // Deep Backgrounds
-  background: '#070b14',       // Deep Matrix Obsidian
-  backgroundSecondary: '#0d1322',
-  surface: '#11192d',          // Card Surface
-  surfaceLight: '#18233e',     // Card Hover / Accent
-  surfaceBorder: '#1f2f53',    // Cyber Border
-  surfaceBorderGlow: '#00ff9d44',
+  // Soft Eye-Comfort Dark Backgrounds
+  background: '#0b101b',          // Deep Slate Obsidian (anti-glare)
+  backgroundSecondary: '#111827', // Smooth dark navy slate
+  surface: '#162035',             // Soothing Card Surface
+  surfaceLight: '#1f2b45',        // Hover / Interactive Item
+  surfaceBorder: '#283856',       // Gentle Border
+  surfaceBorderGlow: 'rgba(45, 212, 191, 0.15)',
 
-  // Cyber Accents & Neon Highlights
-  primary: '#00ff9d',          // Matrix Terminal Emerald
-  primaryDark: '#00cc7d',
-  primaryGlow: 'rgba(0, 255, 157, 0.25)',
+  // Soft Cyber Accents (No harsh piercing neon)
+  primary: '#2dd4bf',             // Soothing Aqua Teal / Emerald Mint (6000K soft)
+  primaryDark: '#14b8a6',
+  primaryGlow: 'rgba(45, 212, 191, 0.18)',
   
-  secondary: '#00e5ff',        // Cyber Hologram Cyan
-  secondaryGlow: 'rgba(0, 229, 255, 0.25)',
+  secondary: '#38bdf8',           // Soft Sky Cyan (calm & legible)
+  secondaryGlow: 'rgba(56, 189, 248, 0.18)',
 
-  accent: '#a855f7',           // Cyber Purple / SIEM
-  accentGlow: 'rgba(168, 85, 247, 0.25)',
+  accent: '#a78bfa',              // Soft Lavender Violet
+  accentGlow: 'rgba(167, 139, 250, 0.18)',
 
-  // Alerts & Priorities
-  highPriority: '#ff3b5c',     // Urgent Crimson
-  highPriorityGlow: 'rgba(255, 59, 92, 0.25)',
+  // Alerts & Priorities (Comfort Tones)
+  highPriority: '#fb7185',        // Soft Coral Rose
+  highPriorityGlow: 'rgba(251, 113, 133, 0.18)',
   
-  mediumPriority: '#ffb800',   // Warning Amber
-  mediumPriorityGlow: 'rgba(255, 184, 0, 0.25)',
+  mediumPriority: '#fbbf24',      // Warm Amber Gold
+  mediumPriorityGlow: 'rgba(251, 191, 36, 0.18)',
   
-  lowPriority: '#00ff9d',      // Terminal Green
-  lowPriorityGlow: 'rgba(0, 255, 157, 0.25)',
+  lowPriority: '#34d399',         // Gentle Sage Mint
+  lowPriorityGlow: 'rgba(52, 211, 153, 0.18)',
 
   // Statuses
-  success: '#00ff9d',
-  warning: '#ffb800',
-  danger: '#ff3b5c',
-  info: '#00e5ff',
+  success: '#34d399',
+  warning: '#fbbf24',
+  danger: '#fb7185',
+  info: '#38bdf8',
 
-  // Text & Typography
-  textPrimary: '#f8fafc',
-  textSecondary: '#94a3b8',
-  textMuted: '#64748b',
-  textDark: '#070b14',
+  // Text & Typography (Gentle Contrast)
+  textPrimary: '#f1f5f9',         // Warm Slate Off-White (no blinding white)
+  textSecondary: '#94a3b8',       // Balanced Neutral Slate
+  textMuted: '#64748b',           // Soft Inactive Slate
+  textDark: '#0b101b',
 
   // Pipeline Stages Colors
-  stageWishlist: '#8b5cf6',
-  stageApplied: '#3b82f6',
-  stageAssessment: '#06b6d4',
-  stageInterview: '#f59e0b',
-  stageSelected: '#10b981',
-  stageRejected: '#ef4444',
+  stageWishlist: '#a78bfa',
+  stageApplied: '#60a5fa',
+  stageAssessment: '#38bdf8',
+  stageInterview: '#fbbf24',
+  stageSelected: '#34d399',
+  stageRejected: '#f87171',
 };
 
 export const SHADOWS = {
   glowPrimary: {
     shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 10,
-    elevation: 8,
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 3,
   },
   glowSecondary: {
     shadowColor: COLORS.secondary,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 10,
-    elevation: 8,
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 3,
   },
   glowDanger: {
     shadowColor: COLORS.danger,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-    elevation: 6,
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 3,
   },
   card: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 2,
   },
 };
 

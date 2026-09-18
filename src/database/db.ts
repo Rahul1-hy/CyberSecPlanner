@@ -62,8 +62,10 @@ export interface SkillItem {
 
 export interface SettingsItem {
   id: string;
+  goal_title?: string;
   target_role: string;
   target_date: string;
+  target_package?: string;
   daily_study_target_hours: number;
   default_reminder_minutes: number;
   notifications_enabled: number;
