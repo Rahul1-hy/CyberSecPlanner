@@ -69,11 +69,11 @@ export async function requestNotificationPermissions(): Promise<boolean> {
     }
 
     if (Platform.OS === 'android') {
-      await Notifications.setNotificationChannelAsync('cybersec_reminders', {
-        name: 'CyberSec Task Reminders',
+      await Notifications.setNotificationChannelAsync('careerpilot_reminders', {
+        name: 'CareerPilot Task Reminders',
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#00ff9d',
+        lightColor: '#2dd4bf',
         sound: 'default',
         enableVibrate: true,
       });
@@ -103,7 +103,7 @@ export async function scheduleTaskReminder(task: TaskItem): Promise<string | nul
     const reminderDate = new Date(taskDate.getTime() - (task.reminder_minutes || 0) * 60 * 1000);
     const now = new Date();
 
-    const reminderTitle = `🔐 CyberSec Reminder: ${task.title}`;
+    const reminderTitle = `🚀 CareerPilot Reminder: ${task.title}`;
     const reminderBody =
       task.reminder_minutes === 0
         ? `Task "${task.title}" is starting now! [${task.category}]`
@@ -207,8 +207,8 @@ export async function sendInstantTestNotification(): Promise<void> {
     if (Platform.OS === 'web') {
       const granted = await requestNotificationPermissions();
       if (granted && typeof window !== 'undefined' && window.Notification) {
-        new window.Notification('🔐 CyberSec Planner Alert', {
-          body: 'Local notification test successful! Your cyber study reminders are working perfectly.',
+        new window.Notification('🚀 CareerPilot Alert', {
+          body: 'Local notification test successful! Your CareerPilot reminders are working perfectly.',
           icon: '/favicon.png',
         });
       }
@@ -217,7 +217,7 @@ export async function sendInstantTestNotification(): Promise<void> {
 
     if (isExpoGo) {
       Alert.alert(
-        '🔐 Notification Engine Notice',
+        '🚀 Notification Engine Notice',
         'Push & background notification modules require a Standalone or Development Build on Android (SDK 53+). When installed via APK/EAS, notifications will fire natively.'
       );
       return;
@@ -231,8 +231,8 @@ export async function sendInstantTestNotification(): Promise<void> {
 
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: '🔐 CyberSec Planner Alert',
-        body: 'Local notification test successful! Your cyber study reminders are working perfectly.',
+        title: '🚀 CareerPilot Alert',
+        body: 'Local notification test successful! Your CareerPilot reminders are working perfectly.',
         sound: 'default',
       },
       trigger: null,

@@ -1,17 +1,17 @@
 {
   "expo": {
-    "name": "CyberSec Planner",
+    "name": "CareerPilot",
     "slug": "cybersec-planner",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "cybersecplanner",
+    "scheme": "careerpilot",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#070b14"
+      "backgroundColor": "#0b101b"
     },
     "ios": {
       "supportsTablet": true
@@ -22,14 +22,10 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#070b14"
+        "backgroundColor": "#0b101b"
       },
       "package": "com.cybersecplanner.app",
       "permissions": [
-        "RECEIVE_BOOT_COMPLETED",
-        "SCHEDULE_EXACT_ALARM",
-        "VIBRATE",
-        "POST_NOTIFICATIONS",
         "RECEIVE_BOOT_COMPLETED",
         "SCHEDULE_EXACT_ALARM",
         "VIBRATE",
@@ -47,7 +43,7 @@
         "expo-notifications",
         {
           "icon": "./assets/icon.png",
-          "color": "#00ff9d"
+          "color": "#2dd4bf"
         }
       ]
     ],

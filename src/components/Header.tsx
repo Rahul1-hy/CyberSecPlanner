@@ -40,7 +40,7 @@ export function Header({ title, subtitle, showGoalBadge = true }: HeaderProps) {
         <View style={styles.titleContainer}>
           <View style={styles.brandRow}>
             <View style={styles.statusDot} />
-            <Text style={styles.brandText}>CYBERSEC PLANNER</Text>
+            <Text style={styles.brandText}>CAREERPILOT</Text>
           </View>
           <Text style={styles.mainTitle}>{title || getGreeting()}</Text>
           {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}

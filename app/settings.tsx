@@ -581,11 +581,11 @@ export default function SettingsScreen() {
             <View style={styles.accordionBody}>
               <View style={styles.aboutHeader}>
                 <View style={styles.aboutIconBox}>
-                  <Ionicons name="shield-checkmark" size={26} color={COLORS.primary} />
+                  <Ionicons name="rocket-outline" size={26} color={COLORS.primary} />
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.aboutAppName}>CyberSec Planner</Text>
-                  <Text style={styles.aboutAppTagline}>Career Acceleration & Readiness Suite</Text>
+                  <Text style={styles.aboutAppName}>CareerPilot</Text>
+                  <Text style={styles.aboutAppTagline}>Career Acceleration & Goal Achievement Suite</Text>
                   <View style={styles.aboutVersionRow}>
                     <View style={styles.versionBadge}>
                       <Text style={styles.versionText}>v1.0.0 (Release)</Text>
@@ -608,9 +608,9 @@ export default function SettingsScreen() {
               </View>
 
               <Text style={styles.aboutDescription}>
-                CyberSec Planner is an all-in-one productivity and career tracking application
-                engineered specifically for aspiring Cyber Security professionals, SOC Analysts,
-                Penetration Testers, and Security Engineers.
+                CareerPilot is an all-in-one productivity and career tracking suite
+                engineered to streamline your job hunting funnel, daily routine tasks, and
+                long-term career milestones.
               </Text>
 
               {/* Developer Details Card */}
@@ -626,7 +626,7 @@ export default function SettingsScreen() {
                 <View style={styles.devRow}>
                   <Ionicons name="logo-github" size={16} color={COLORS.secondary} />
                   <Text style={styles.devLabel}>Repository:</Text>
-                  <Text style={styles.devValue}>Rahul1-hy/CyberSecPlanner</Text>
+                  <Text style={styles.devValue}>Rahul1-hy/CareerPilot</Text>
                 </View>
 
                 <View style={styles.devRow}>
@@ -664,7 +664,7 @@ export default function SettingsScreen() {
 
               <View style={styles.copyrightRow}>
                 <Text style={styles.copyrightText}>
-                  © 2026 CyberSec Planner • Crafted for Security Engineers
+                  © 2026 CareerPilot • Track Jobs, Tasks & Goals
                 </Text>
               </View>
             </View>
